@@ -1,24 +1,24 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    makefile                                           :+:      :+:    :+:    #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/18 17:33:29 by aleon-ca          #+#    #+#              #
-#    Updated: 2021/01/18 17:33:34 by aleon-ca         ###   ########.fr        #
+#    Updated: 2021/01/19 12:57:28 by aleon-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = ./*.c
+SRCS = main.c utils.c
 
 OBJS = $(SRCS:.c=.o)
 
 NAME = philo_one
 
-INCLUDE = -lpthread
+INCLUDE = -I. -lpthread
 FLAGS = -Werror -Wextra -Wall
-GCC = gcc $(FLAGS) -I. $(INCLUDE)
+GCC = gcc $(FLAGS)
 
 RM = rm -f
 
