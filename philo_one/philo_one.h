@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/19 17:39:44 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/19 18:16:26 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,15 @@
 
 typedef struct				s_params
 {
+	unsigned long			id;
 	unsigned long			num_phi;
 	long double				time_to_die;
 	long double				time_to_eat;
 	long double				time_to_sleep;
 	unsigned long			num_must_eat;
-}							t_args;
+}							t_thread_data;
+
+t_thread_data				g_args;
 
 char						*g_forks;
 
