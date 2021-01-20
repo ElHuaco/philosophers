@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/20 13:20:10 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/20 13:26:43 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ printf("\t¡Que me quedo sin comer!\n");
 	return (NULL);
 }
 
-static int		set_and_check_args(int argc, char **argv, t_thread_data *args)
+static int		set_and_check_args(int argc, char **argv, t_program_args *args)
 {
 	args->num_phi = ft_atoul(argv[1]);
 	args->time_to_die = ft_atould(argv[2]);
