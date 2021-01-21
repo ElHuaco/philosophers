@@ -6,42 +6,11 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/20 13:26:43 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/21 13:48:42 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
-
-static void		*primum_vivere(void *philo_id)
-{
-	unsigned long		id;
-
-	id = *(unsigned long *)(&philo_id);
-//gettimeofday aquí y si no ha comido en time_to_die, end
-	pthread_mutex_lock(&g_mutex_forks);
-printf("Hola mundo, soy el Filósofo %lu\n", id);
-	if ((id != 0)
-		&& (g_forks[id - 1] == 1) && (g_forks[id] == 1))
-	{
-		g_forks[id - 1] = 0;
-		g_forks[id] = 0;
-printf("\tñam ñam ñam\n");
-	//Deinde Filosofare
-	}
-	else if ((id == 0)
-		&& (g_forks[g_args.num_phi - 1] == 1) && (g_forks[0] == 1))
-	{
-		g_forks[g_args.num_phi - 1] = 0;
-		g_forks[0] = 0;
-printf("\tñam ñam ñam\n");
-	//Deinde filosofare
-	}
-	else
-printf("\t¡Que me quedo sin comer!\n");
-	pthread_mutex_unlock(&g_mutex_forks);
-//usleep(g_args.time_to_sleep);
-	return (NULL);
-}
 
 static int		set_and_check_args(int argc, char **argv, t_program_args *args)
 {
@@ -65,6 +34,8 @@ static int		create_threads(pthread_t *phi_threads, unsigned long *phi_id)
 {
 	unsigned long		i;
 
+	if (pthread_mutex_lock(&g_mutex_forks))
+		return (1);
 	i = 0;
 	while (i < g_args.num_phi)
 	{
@@ -74,12 +45,15 @@ static int		create_threads(pthread_t *phi_threads, unsigned long *phi_id)
 			return (1);
 		++i;
 	}
+	if (pthread_mutex_unlock(&g_mutex_forks))
+		return (1);
 	return (0);
 }
 
 static void		garbage_collection(pthread_t **philos, unsigned long **id)
 {
 	pthread_mutex_destroy(&g_mutex_forks);
+	pthread_mutex_destroy(&g_mutex_stdout);
 	free(g_forks);
 	free(*philos);
 	free(*id);
@@ -98,18 +72,15 @@ int				main(int argc, char **argv)
 		|| !(phi_threads = malloc(sizeof(pthread_t) * g_args.num_phi))
 		|| !(phi_id = malloc(sizeof(unsigned long) * g_args.num_phi))
 		|| (pthread_mutex_init(&g_mutex_forks, NULL))
-		|| (pthread_mutex_lock(&g_mutex_forks))
 		|| (create_threads(phi_threads, phi_id)))
 		return (1);
-	pthread_mutex_unlock(&g_mutex_forks);
 	i = 0;
 	while (i < g_args.num_phi)
-		if ((pthread_join(phi_threads[i++], NULL)))
-			return (1);
+		pthread_join(phi_threads[i++], NULL);
 	i = 0;
 	while (i < g_args.num_phi)
 	{
-		printf("fork #%lu: %d\n", i, g_forks[i]);
+		printf("\tfork #%lu: %d\n", i, g_forks[i]);
 		++i;
 	}
 	garbage_collection(&phi_threads, &phi_id);

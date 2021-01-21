@@ -6,11 +6,11 @@
 #    By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/18 17:33:29 by aleon-ca          #+#    #+#              #
-#    Updated: 2021/01/19 12:57:28 by aleon-ca         ###   ########.fr        #
+#    Updated: 2021/01/21 13:14:30 by aleon-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.c utils.c
+SRCS = main.c utils.c subroutines.c
 
 OBJS = $(SRCS:.c=.o)
 
