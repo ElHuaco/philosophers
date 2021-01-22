@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/21 13:41:17 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/22 10:44:16 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@
 # include <sys/time.h>
 # include <pthread.h>
 
+# define FORK_STR "has taken a fork\n"
+# define EAT_STR "is eating\n"
+# define SLEEP_STR "is sleeping\n"
+# define THINK_STR "is thinking\n"
+# define DEATH_STR "died\n"
+
 typedef struct				s_params
 {
 	unsigned long			num_phi;
@@ -32,14 +38,18 @@ typedef struct				s_params
 
 t_program_args				g_args;
 char						*g_forks;
+pthread_t					*g_phi_threads;
 pthread_mutex_t				g_mutex_forks;
 pthread_mutex_t				g_mutex_stdout;
-pthread_mutex_t				g_mutex_deadflag;
+pthread_mutex_t				g_mutex_start;
 
 int							ft_strlen(char *str);
 char						*ft_strchr(char *str, int c);
 unsigned long				ft_atoul(char *str);
 long double					ft_atould(char *str);
+
+char						*ft_ultoa(unsigned long n);
+char						*ft_uldtoa(unsigned long double n);
 
 void						*primum_vivere(void *philo_id);
 
