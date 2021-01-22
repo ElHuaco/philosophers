@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/19 13:32:09 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/22 10:59:34 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,11 @@ static long double	pow(long double base, unsigned int exp)
 		return (base * pow(base, exp - 1));
 }
 
-long double		ft_atould(char *str)
+long double		ft_atold(char *str)
 {
 	long double	result;
-	int						i;
-	char					*comma_pos;
+	int			i;
+	char		*comma_pos;
 	
 	if (!str)
 		return (0);

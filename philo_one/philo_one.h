@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/22 10:44:16 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/22 10:59:49 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ pthread_mutex_t				g_mutex_start;
 int							ft_strlen(char *str);
 char						*ft_strchr(char *str, int c);
 unsigned long				ft_atoul(char *str);
-long double					ft_atould(char *str);
+long double					ft_atold(char *str);
 
 char						*ft_ultoa(unsigned long n);
-char						*ft_uldtoa(unsigned long double n);
+char						*ft_ldtoa(long double n);
 
 void						*primum_vivere(void *philo_id);
 

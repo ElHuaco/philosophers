@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/22 10:42:27 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/22 11:00:08 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static int		set_and_check_args(int argc, char **argv, t_program_args *args)
 {
 	args->num_phi = ft_atoul(argv[1]);
-	args->time_to_die = ft_atould(argv[2]);
-	args->time_to_eat = ft_atould(argv[3]);
-	args->time_to_sleep = ft_atould(argv[4]);
+	args->time_to_die = ft_atold(argv[2]);
+	args->time_to_eat = ft_atold(argv[3]);
+	args->time_to_sleep = ft_atold(argv[4]);
 	if (argc == 6)
 	{
 		args->num_must_eat = ft_atoul(argv[5]);

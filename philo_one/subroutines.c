@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/22 10:41:13 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/22 11:00:25 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	print_status_change(struct timeval *t, unsigned long id, char *str)
 {
-	unsigned long double		time;
+	long double		time;
 	char						*time_str;
 	char						*id_str;
 
@@ -22,7 +22,7 @@ static void	print_status_change(struct timeval *t, unsigned long id, char *str)
 	t[1].tv_sec -= t[0].tv_sec;
 	t[1].tv_usec -= t[0].tv_usec;
 	time = t[1].tv_sec * 1000.0 + t[1].tv_usec / 1000.0;
-	time_str = ft_uldtoa(time);
+	time_str = ft_ldtoa(time);
 	id_str = ft_ultoa(id + 1);
 	pthread_mutex_lock(&g_mutex_stdout);
 	write(1, time_str, ft_strlen(time_str));
@@ -75,9 +75,9 @@ static void	philosphare(unsigned long i, struct timeval *t, int *f, int *m)
 
 static void	tunc_moriatur(unsigned long id, struct timeval *time)
 {
-	unsigned long double		time_since_last_meal;
-	char						*time_str;
-	char						*id_str;
+	long double		time_since_last_meal;
+	char			*time_str;
+	char			*id_str;
 
 	gettimeofday(time + 1, NULL);
 	time[1].tv_sec -= time[0].tv_sec;
@@ -86,7 +86,7 @@ static void	tunc_moriatur(unsigned long id, struct timeval *time)
 	if (time_since_last_meal >= g_args.time_to_die)
 	{
 		g_args.deadflag = 1;
-		time_str = ft_uldtoa(time_since_last_meal);
+		time_str = ft_ldtoa(time_since_last_meal);
 		id_str = ft_ultoa(id + 1);
 		pthread_mutex_lock(&g_mutex_stdout);
 		write(1, time_str, ft_strlen(time_str));
