@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/22 11:00:08 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/22 12:28:39 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,9 @@ int				main(int argc, char **argv)
 		|| !(memset(g_forks, 1,  sizeof(char) * g_args.num_phi))
 		|| !(g_phi_threads = malloc(sizeof(pthread_t) * g_args.num_phi))
 		|| !(phi_id = malloc(sizeof(unsigned long) * g_args.num_phi))
+		|| (pthread_mutex_init(&g_mutex_start, NULL))
 		|| (pthread_mutex_init(&g_mutex_forks, NULL))
+		|| (pthread_mutex_init(&g_mutex_stdout, NULL))
 		|| (create_threads(g_phi_threads, phi_id)))
 		return (1);
 	i = 0;
