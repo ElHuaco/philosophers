@@ -6,17 +6,17 @@
 #    By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/18 17:33:29 by aleon-ca          #+#    #+#              #
-#    Updated: 2021/01/22 10:45:48 by aleon-ca         ###   ########.fr        #
+#    Updated: 2021/01/23 18:54:47 by aleon-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.c utils.c utils2.c subroutines.c
+SRCS = main.c subroutines.c utils.c
 
 OBJS = $(SRCS:.c=.o)
 
 NAME = philo_one
 
-INCLUDE = -I. -lpthread
+#INCLUDE = -I. -lpthread
 FLAGS = -Werror -Wextra -Wall
 GCC = gcc $(FLAGS)
 

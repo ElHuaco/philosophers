@@ -6,13 +6,13 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/22 10:59:34 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/23 21:49:25 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-int							ft_strlen(char *str)
+int				ft_strlen(char *str)
 {
 	int		i;
 
@@ -24,20 +24,7 @@ int							ft_strlen(char *str)
 	return (i);
 }
 
-char						*ft_strchr(char *str, int c)
-{
-	int		i;
-
-	if (!str)
-		return (0);
-	i = -1;
-	while (str[++i])
-		if (str[i] == c)
-			return (str + i);
-	return (0);
-}
-
-unsigned long				ft_atoul(char *str)
+unsigned long	ft_atoul(char *str)
 {
 	unsigned long	result;
 	int				i;
@@ -56,38 +43,47 @@ unsigned long				ft_atoul(char *str)
 	return (result);
 }
 
-static long double	pow(long double base, unsigned int exp)
+static void		ft_putnbr(char *result, unsigned long n, int pos)
 {
-	long double result;
-
-	if (exp == 0)
-		return (1);
-	else
-		return (base * pow(base, exp - 1));
+	if (n >= 10)
+		ft_putnbr(result, n / 10, pos - 1);
+	result[pos] = n % 10 + '0';
 }
 
-long double		ft_atold(char *str)
+char			*ft_ltoa(long n)
 {
-	long double	result;
-	int			i;
-	char		*comma_pos;
-	
-	if (!str)
-		return (0);
-	result = 0;
-	i = -1;
-	comma_pos = ft_strchr(str, '.');
-	while (str[++i])
+	char	*result;
+	int		digit_num;
+	long	temp;
+
+	temp = n;
+	digit_num = 1;
+	while (temp >= 10)
 	{
-		if ((str[i] >= '0') && (str[i] <= '9')
-			&& ((comma_pos > str + i) || !(comma_pos)))
-			result = result * 10 + (str[i] - '0');
-		else if ((str[i] >= '0') && (str[i] <= '9') && (comma_pos < str + i))
-			result += pow(0.1, str + i - comma_pos) * (str[i] - '0');
-		else if ((str[i] == '.') && (str + i == comma_pos))
-			continue ;
-		else
-			return (0);
+		temp = temp / 10;
+		digit_num++;
 	}
+	result = malloc(sizeof(char) * (digit_num + 1));
+	result[digit_num] = '\0';
+	ft_putnbr(result, n, digit_num - 1);
+printf("ltoa: %ld\n", n);
+	return (result);
+}
+char			*ft_ultoa(unsigned long n)
+{
+	char			*result;
+	int				digit_num;
+	unsigned long	temp;
+
+	temp = n;
+	digit_num = 1;
+	while (temp >= 10)
+	{
+		temp = temp / 10;
+		digit_num++;
+	}
+	result = malloc(sizeof(char) * (digit_num + 1));
+	result[digit_num] = '\0';
+	ft_putnbr(result, n, digit_num - 1);
 	return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/22 10:59:49 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/23 21:43:23 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@
 typedef struct				s_params
 {
 	unsigned long			num_phi;
-	long double				time_to_die;
-	long double				time_to_eat;
-	long double				time_to_sleep;
+	long					time_to_die;
+	long					time_to_eat;
+	long					time_to_sleep;
 	unsigned long			num_must_eat;
 	int						deadflag;
 }							t_program_args;
@@ -44,12 +44,11 @@ pthread_mutex_t				g_mutex_stdout;
 pthread_mutex_t				g_mutex_start;
 
 int							ft_strlen(char *str);
-char						*ft_strchr(char *str, int c);
 unsigned long				ft_atoul(char *str);
-long double					ft_atold(char *str);
-
 char						*ft_ultoa(unsigned long n);
-char						*ft_ldtoa(long double n);
+char						*ft_ltoa(long n);
+
+long						get_timestamp(struct timeval *t, struct timeval *u);
 
 void						*primum_vivere(void *philo_id);
 
