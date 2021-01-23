@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/23 21:54:17 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/23 22:00:27 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	philosophare(unsigned long id, struct timeval *t, int *frk, int *ml)
 {
 	gettimeofday(t + 1, NULL);
 	print_status_change(get_timestamp(t, t + 1), id, EAT_STR);
-	usleep(g_args.time_to_eat * 1000.0);
+	usleep(g_args.time_to_eat * 1000);
 	(*ml)++;
 	pthread_mutex_lock(&g_mutex_forks);
 	g_forks[id] = 1;
@@ -68,7 +68,7 @@ static void	philosophare(unsigned long id, struct timeval *t, int *frk, int *ml)
 	*frk = 0;
 	gettimeofday(t + 2, NULL);
 	print_status_change(get_timestamp(t, t + 2), id, SLEEP_STR);
-	usleep(g_args.time_to_sleep * 1000.0);
+	usleep(g_args.time_to_sleep * 1000);
 	gettimeofday(t + 2, NULL);
 	print_status_change(get_timestamp(t, t + 2), id, THINK_STR);
 }
