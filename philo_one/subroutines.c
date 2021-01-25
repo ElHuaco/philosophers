@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 13:10:03 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 13:28:03 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,12 @@ static void	philosophare(unsigned long i, struct timeval *t, int *f, int *m)
 	usleep(g_args.time_to_eat * 1000);
 	gettimeofday(t + 1, NULL);
 	(*m)++;
+	if ((g_args.num_must_eat) && (*m == g_args.num_must_eat))
+	{
+		pthread_mutex_lock(&g_mutex_start);
+		g_args.num_satiated++;
+		pthread_mutex_unlock(&g_mutex_start);
+	}
 	pthread_mutex_lock(&g_mutex_forks);
 	g_forks[i] = 1;
 	(i != 0) ? (g_forks[i - 1] = 1)
@@ -69,13 +75,6 @@ static void	tunc_moriatur(unsigned long id, struct timeval *time)
 	}
 }
 
-void		plenus_sum(void)
-{
-	pthread_mutex_lock(&g_mutex_start);
-	g_args.num_satiated++;
-	pthread_mutex_unlock(&g_mutex_start);
-}
-
 void		*primum_vivere(void *philo_id)
 {
 	unsigned long		id;
@@ -99,8 +98,6 @@ void		*primum_vivere(void *philo_id)
 			philosophare(id, time, &forks_held, &meals_had);
 		else
 			tunc_moriatur(id, time);
-		if ((g_args.num_must_eat) && (meals_had == g_args.num_must_eat))
-			plenus_sum();
 	}
 	return (NULL);
 }

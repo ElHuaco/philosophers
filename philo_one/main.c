@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 12:38:28 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 13:28:52 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int				main(int argc, char **argv)
 	if (((argc != 5) && (argc != 6))
 		|| (set_and_check_args(argc, argv))
 		|| !(g_forks = malloc(sizeof(char) * g_args.num_phi))
-		|| !(memset(g_forks, 1,  sizeof(char) * g_args.num_phi))
+		|| !(memset(g_forks, 1, sizeof(char) * g_args.num_phi))
 		|| !(g_phi_threads = malloc(sizeof(pthread_t) * g_args.num_phi))
 		|| !(phi_id = malloc(sizeof(unsigned long) * g_args.num_phi))
 		|| (pthread_mutex_init(&g_mutex_start, NULL))
