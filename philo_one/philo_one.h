@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/23 21:43:23 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 11:59:09 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,28 @@
 typedef struct				s_params
 {
 	unsigned long			num_phi;
-	long					time_to_die;
-	long					time_to_eat;
-	long					time_to_sleep;
+	unsigned long			time_to_die;
+	unsigned long			time_to_eat;
+	unsigned long			time_to_sleep;
 	unsigned long			num_must_eat;
 	int						deadflag;
+	unsigned long			num_satiated;
 }							t_program_args;
 
-t_program_args				g_args;
-char						*g_forks;
-pthread_t					*g_phi_threads;
-pthread_mutex_t				g_mutex_forks;
-pthread_mutex_t				g_mutex_stdout;
-pthread_mutex_t				g_mutex_start;
+t_program_args	g_args;
+char			*g_forks;
+pthread_t		*g_phi_threads;
+pthread_mutex_t	g_mutex_forks;
+pthread_mutex_t	g_mutex_stdout;
+pthread_mutex_t	g_mutex_start;
 
-int							ft_strlen(char *str);
-unsigned long				ft_atoul(char *str);
-char						*ft_ultoa(unsigned long n);
-char						*ft_ltoa(long n);
+int				ft_strlen(char *str);
+unsigned long	ft_atoul(char *str);
+char			*ft_ultoa(unsigned long n);
+void			print_status_change(unsigned long t, unsigned long i, char *s);
 
-long						get_timestamp(struct timeval *t, struct timeval *u);
+unsigned long	get_timestamp(struct timeval *t, struct timeval *u);
 
-void						*primum_vivere(void *philo_id);
+void			*primum_vivere(void *philo_id);
 
 #endif

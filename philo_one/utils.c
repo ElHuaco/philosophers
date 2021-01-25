@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/23 21:49:25 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 11:58:02 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,6 @@ static void		ft_putnbr(char *result, unsigned long n, int pos)
 	result[pos] = n % 10 + '0';
 }
 
-char			*ft_ltoa(long n)
-{
-	char	*result;
-	int		digit_num;
-	long	temp;
-
-	temp = n;
-	digit_num = 1;
-	while (temp >= 10)
-	{
-		temp = temp / 10;
-		digit_num++;
-	}
-	result = malloc(sizeof(char) * (digit_num + 1));
-	result[digit_num] = '\0';
-	ft_putnbr(result, n, digit_num - 1);
-printf("ltoa: %ld\n", n);
-	return (result);
-}
 char			*ft_ultoa(unsigned long n)
 {
 	char			*result;
@@ -86,4 +67,22 @@ char			*ft_ultoa(unsigned long n)
 	result[digit_num] = '\0';
 	ft_putnbr(result, n, digit_num - 1);
 	return (result);
+}
+
+void			print_status_change(unsigned long tm, unsigned long id, char *s)
+{
+	char		*time_str;
+	char		*id_str;
+
+	time_str = ft_ultoa(tm);
+	id_str = ft_ultoa(id + 1);
+	pthread_mutex_lock(&g_mutex_stdout);
+	write(1, time_str, ft_strlen(time_str));
+	write(1, " ", 1);
+	write(1, id_str, ft_strlen(id_str));
+	write(1, " ", 1);
+	write(1, s, ft_strlen(s));
+	pthread_mutex_unlock(&g_mutex_stdout);
+	free(id_str);
+	free(time_str);
 }
