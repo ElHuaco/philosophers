@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 11:58:02 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 13:12:56 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char			*ft_ultoa(unsigned long n)
 	return (result);
 }
 
-void			print_status_change(unsigned long tm, unsigned long id, char *s)
+void			printchange(unsigned long tm, unsigned long id, char *s)
 {
 	char		*time_str;
 	char		*id_str;

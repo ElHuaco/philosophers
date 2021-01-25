@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 11:53:06 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 12:38:28 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int		create_threads(pthread_t *g_phi_threads, unsigned long *phi_id)
 	{
 		phi_id[i] = i;
 		if ((pthread_create(&g_phi_threads[i], NULL, primum_vivere,
-			(void *) phi_id[i])))
+			(void *)phi_id[i])))
 			return (1);
 		++i;
 	}

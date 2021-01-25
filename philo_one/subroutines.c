@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 12:06:43 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 13:10:03 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	capto_furca(unsigned long id, struct timeval *t, int *frks_hld)
 			: (g_forks[g_args.num_phi - 1] = 0);
 		(*frks_hld)++;
 		gettimeofday(t + 2, NULL);
-		print_status_change(get_timestamp(t, t + 2), id, FORK_STR);
+		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
 	pthread_mutex_unlock(&g_mutex_forks);
 	pthread_mutex_lock(&g_mutex_forks);
@@ -31,7 +31,7 @@ static void	capto_furca(unsigned long id, struct timeval *t, int *frks_hld)
 		g_forks[id] = 0;
 		(*frks_hld)++;
 		gettimeofday(t + 2, NULL);
-		print_status_change(get_timestamp(t, t + 2), id, FORK_STR);
+		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
 	pthread_mutex_unlock(&g_mutex_forks);
 }
@@ -39,9 +39,9 @@ static void	capto_furca(unsigned long id, struct timeval *t, int *frks_hld)
 static void	philosophare(unsigned long i, struct timeval *t, int *f, int *m)
 {
 	gettimeofday(t + 1, NULL);
-	print_status_change(get_timestamp(t, t + 1), i, EAT_STR);
+	printchange(get_timestamp(t, t + 1), i, EAT_STR);
 	usleep(g_args.time_to_eat * 1000);
-	gettimeofday(t + 1, NULL);//Error died stamps aquí:aunque sea por referencia
+	gettimeofday(t + 1, NULL);
 	(*m)++;
 	pthread_mutex_lock(&g_mutex_forks);
 	g_forks[i] = 1;
@@ -50,10 +50,10 @@ static void	philosophare(unsigned long i, struct timeval *t, int *f, int *m)
 	pthread_mutex_unlock(&g_mutex_forks);
 	*f = 0;
 	gettimeofday(t + 2, NULL);
-	print_status_change(get_timestamp(t, t + 2), i, SLEEP_STR);
+	printchange(get_timestamp(t, t + 2), i, SLEEP_STR);
 	usleep(g_args.time_to_sleep * 1000);
 	gettimeofday(t + 2, NULL);
-	print_status_change(get_timestamp(t, t + 2), i, THINK_STR);
+	printchange(get_timestamp(t, t + 2), i, THINK_STR);
 }
 
 static void	tunc_moriatur(unsigned long id, struct timeval *time)
@@ -65,7 +65,7 @@ static void	tunc_moriatur(unsigned long id, struct timeval *time)
 	if (time_since_last_meal >= g_args.time_to_die)
 	{
 		g_args.deadflag = 1;
-		print_status_change(time_since_last_meal, id, DEATH_STR);
+		printchange(get_timestamp(time, time + 2), id, DEATH_STR);
 	}
 }
 
@@ -79,7 +79,7 @@ void		plenus_sum(void)
 void		*primum_vivere(void *philo_id)
 {
 	unsigned long		id;
-	struct timeval		time[3];//time[0] inicio; time[1] comida; time[2] evento
+	struct timeval		time[3];
 	int					forks_held;
 	int					meals_had;
 
@@ -91,7 +91,7 @@ void		*primum_vivere(void *philo_id)
 	gettimeofday(time + 1, NULL);
 	pthread_mutex_unlock(&g_mutex_start);
 	gettimeofday(time + 2, NULL);
-	print_status_change(get_timestamp(time, time + 2), id, THINK_STR);
+	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
 		capto_furca(id, time, &forks_held);
