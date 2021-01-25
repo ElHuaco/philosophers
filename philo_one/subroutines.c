@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 13:28:03 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/25 13:36:26 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ static void	philosophare(unsigned long i, struct timeval *t, int *f, int *m)
 	gettimeofday(t + 1, NULL);
 	printchange(get_timestamp(t, t + 1), i, EAT_STR);
 	usleep(g_args.time_to_eat * 1000);
-	gettimeofday(t + 1, NULL);
 	(*m)++;
 	if ((g_args.num_must_eat) && (*m == g_args.num_must_eat))
 	{
