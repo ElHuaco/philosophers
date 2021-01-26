@@ -4,7 +4,9 @@ Teoría:
 - [Sincronización (IBM)](https://www.ibm.com/support/knowledgecenter/ssw_aix_71/generalprogramming/synch_overbmort.html)
 
 Test:
-- ./philo_x 5 800 200 200 -> No one should die
-- ./philo_x 5 800 200 200 7 -> No one should die
-- ./philo_x 4 410 200 200 -> No one should die
-- ./philo_x 4 310 200 100 -> One should die
+- [ ]./philo_x 5 800 200 200 -> No one should die
+- [ ]./philo_x 5 800 200 200 7 -> No one should die
+- [ ]./philo_x 4 410 200 200 -> No one should die
+- [ x ] ./philo_x 4 310 200 100 -> One should die
+- [ x ] ./philo_x 2 310 200 100 -> One should die
+- [ x ] No more than 10ms from time of death to printing it.
