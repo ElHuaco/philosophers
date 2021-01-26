@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 13:28:52 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/26 11:31:41 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,9 @@ int				main(int argc, char **argv)
 	i = 0;
 	while (i < g_args.num_phi)
 		pthread_join(g_phi_threads[i++], NULL);
+	i = 0;
+	while (i++ < g_args.num_phi)
+		printf("fork[%lu]: %d\n", i, g_forks[i - 1]);
 	garbage_collection(&phi_id);
 	return (0);
 }

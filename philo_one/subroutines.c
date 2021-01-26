@@ -6,30 +6,28 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 13:36:26 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/26 17:44:15 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-static void	capto_furca(unsigned long id, struct timeval *t, int *frks_hld)
+static void	capto_furca(unsigned long id, struct timeval *t, int *frk_hld)
 {
 	pthread_mutex_lock(&g_mutex_forks);
-	if (((id != 0) && (g_forks[id - 1] == 1)) || ((id == 0)
-		&& (g_forks[g_args.num_phi - 1] == 1)))
+	if ((frk_hld[0] == 0) && (((id != 0) && (g_forks[id - 1] == 1))
+		|| ((id == 0) && (g_forks[g_args.num_phi - 1] == 1))))
 	{
 		(id != 0) ? (g_forks[id - 1] = 0)
 			: (g_forks[g_args.num_phi - 1] = 0);
-		(*frks_hld)++;
+		frk_hld[0] = 1;
 		gettimeofday(t + 2, NULL);
 		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
-	pthread_mutex_unlock(&g_mutex_forks);
-	pthread_mutex_lock(&g_mutex_forks);
-	if (g_forks[id] == 1)
+	else if ((frk_hld[1] == 0) && (g_forks[id] == 1))
 	{
 		g_forks[id] = 0;
-		(*frks_hld)++;
+		frk_hld[1] = 1;
 		gettimeofday(t + 2, NULL);
 		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
@@ -50,10 +48,13 @@ static void	philosophare(unsigned long i, struct timeval *t, int *f, int *m)
 	}
 	pthread_mutex_lock(&g_mutex_forks);
 	g_forks[i] = 1;
+	pthread_mutex_unlock(&g_mutex_forks);
+	pthread_mutex_lock(&g_mutex_forks);
 	(i != 0) ? (g_forks[i - 1] = 1)
 		: (g_forks[g_args.num_phi - 1] = 1);
 	pthread_mutex_unlock(&g_mutex_forks);
-	*f = 0;
+	f[0] = 0;
+	f[1] = 0;
 	gettimeofday(t + 2, NULL);
 	printchange(get_timestamp(t, t + 2), i, SLEEP_STR);
 	usleep(g_args.time_to_sleep * 1000);
@@ -78,11 +79,12 @@ void		*primum_vivere(void *philo_id)
 {
 	unsigned long		id;
 	struct timeval		time[3];
-	int					forks_held;
+	int					forks_held[2];
 	int					meals_had;
 
 	id = *(unsigned long *)(&philo_id);
-	forks_held = 0;
+	forks_held[0] = 0;
+	forks_held[1] = 0;
 	meals_had = 0;
 	pthread_mutex_lock(&g_mutex_start);
 	gettimeofday(time, NULL);
@@ -92,11 +94,10 @@ void		*primum_vivere(void *philo_id)
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
-		capto_furca(id, time, &forks_held);
-		if (forks_held == 2)
-			philosophare(id, time, &forks_held, &meals_had);
-		else
-			tunc_moriatur(id, time);
+		capto_furca(id, time, forks_held);
+		if ((forks_held[0]) && (forks_held[1]))
+			philosophare(id, time, forks_held, &meals_had);
+		tunc_moriatur(id, time);
 	}
 	return (NULL);
 }
