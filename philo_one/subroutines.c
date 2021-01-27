@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/26 19:03:30 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/27 13:00:13 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,22 @@
 
 static void	relinquo_furca(unsigned long id, struct timeval *tim, int *frk_held)
 {
-	unsigned long lapse;
-
 	gettimeofday(tim + 2, NULL);
-	if ((lapse = get_timestamp(tim + 1, tim + 2)) < g_args.time_to_eat)
-		return ;
+	if (get_timestamp(tim + 1, tim + 2) < g_args.time_to_eat)
+		return  ;
 	pthread_mutex_lock(&g_mutex_forks);
 	if ((frk_held[0]))
 	{
 		(id != 0) ? (g_forks[id - 1] = 1)
 			: (g_forks[g_args.num_phi - 1] = 1);
 		frk_held[0] = 0;
-		pthread_mutex_lock(&g_mutex_stdout);
-		printf("%lu %lu dropped left fork\n", get_timestamp(tim, tim + 2), id + 1);
-		pthread_mutex_unlock(&g_mutex_stdout);
+		printchange(get_timestamp(tim, tim + 2), id, "dropped left fork\n");
 	}
 	else
 	{
 		g_forks[id] = 1;
 		frk_held[1] = 0;
-		pthread_mutex_lock(&g_mutex_stdout);
-		printf("%lu %lu dropped right fork\n", get_timestamp(tim, tim + 2), id + 1);
-		pthread_mutex_unlock(&g_mutex_stdout);
+		printchange(get_timestamp(tim, tim + 2), id, "dropped right fork\n");
 	}
 	pthread_mutex_unlock(&g_mutex_forks);
 	usleep(g_args.time_to_eat * 1000);
@@ -53,7 +47,9 @@ static void	capto_furca(unsigned long id, struct timeval *t, int *frk_hld)
 		gettimeofday(t + 2, NULL);
 		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
-	else if ((frk_hld[1] == 0) && (g_forks[id] == 1))
+	pthread_mutex_unlock(&g_mutex_forks);
+	pthread_mutex_lock(&g_mutex_forks);
+	if ((frk_hld[1] == 0) && (g_forks[id] == 1))
 	{
 		g_forks[id] = 0;
 		frk_hld[1] = 1;
@@ -80,6 +76,8 @@ static void	philosophare(unsigned long i, struct timeval *t, int *f, int *m)
 	(i != 0) ? (g_forks[i - 1] = 1)
 		: (g_forks[g_args.num_phi - 1] = 1);
 	pthread_mutex_unlock(&g_mutex_forks);
+	gettimeofday(t + 2, NULL);
+	printchange(get_timestamp(t, t + 2), i, "dropped both forks\n");
 	f[0] = 0;
 	f[1] = 0;
 	gettimeofday(t + 2, NULL);
@@ -123,10 +121,7 @@ void		*primum_vivere(void *philo_id)
 	{
 		capto_furca(id, time, forks_held);
 		if ((forks_held[0]) && (forks_held[1]))
-		{
 			philosophare(id, time, forks_held, &meals_had);
-			//continue aquí o algo: no relinquo después de comer
-		}
 		else if ((forks_held[0]) || (forks_held[1]))
 			relinquo_furca(id, time, forks_held);
 		tunc_moriatur(id, time);
