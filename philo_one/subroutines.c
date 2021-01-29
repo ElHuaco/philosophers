@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/29 10:03:31 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/29 14:03:03 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	capto_furca(unsigned long id, struct timeval *t, int *frk_hld)
 {
+	//Probar arbiter/waiter también, sin que hablen entre ellos.
 	pthread_mutex_lock(&g_mutex_forks);
 	if (!(id % 2))
 	{
