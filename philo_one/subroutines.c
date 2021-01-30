@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/30 12:11:22 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/30 12:47:24 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ void		*primum_vivere(void *philo_id)
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
+		//Si tengo ambos tenedores disponibles y la cola está vacía, como
+		//Si no, me pongo a la cola
 		capto_furca(id, time, forks_held);
 		if ((forks_held[0]) && (forks_held[1]))
 			philosophare(id, time, forks_held, &meals_had);
