@@ -10,3 +10,4 @@ Test:
 - [ x ] ./philo_x 4 310 200 100 -> One should die
 - [ x ] ./philo_x 2 310 200 100 -> One should die
 - [ x ] No more than 10ms from time of death to printing it.
+- [socrates](https://github.com/nesvoboda/socrates)

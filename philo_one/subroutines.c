@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/29 14:03:03 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/30 12:11:22 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ static void	tunc_moriatur(unsigned long id, struct timeval *time)
 	gettimeofday(time + 2, NULL);
 	if (get_timestamp(time + 1, time + 2) >= g_args.time_to_die)
 	{
-		g_args.deadflag = 1;
 		printchange(get_timestamp(time, time + 2), id, DEATH_STR);
+		g_args.deadflag = 1;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/25 13:12:56 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/01/30 12:05:37 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void			printchange(unsigned long tm, unsigned long id, char *s)
 	char		*time_str;
 	char		*id_str;
 
+	if ((g_args.deadflag))
+		return ;
 	time_str = ft_ultoa(tm);
 	id_str = ft_ultoa(id + 1);
 	pthread_mutex_lock(&g_mutex_stdout);
