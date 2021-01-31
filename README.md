@@ -1,3 +1,5 @@
+"The challenge in the dining philosophers problem is to design a protocol so that the philosophers do not deadlock (i.e. the entire set of philosophers does not stop and wait indefinitely), and so that no philosopher starves (i.e. every philosopher eventually gets his/her hands on a pair of chopsticks)."
+
 Teoría:
 - [Tutorial 1](https://hpc.llnl.gov/training/tutorials/introduction-parallel-computing-tutorial)
 -	[Tutorial 2](https://computing.llnl.gov/tutorials/pthreads/)
