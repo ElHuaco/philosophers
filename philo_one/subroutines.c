@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/30 12:47:24 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/01 11:10:13 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,43 +16,21 @@ static void	capto_furca(unsigned long id, struct timeval *t, int *frk_hld)
 {
 	//Probar arbiter/waiter también, sin que hablen entre ellos.
 	pthread_mutex_lock(&g_mutex_forks);
-	if (!(id % 2))
+	if ((frk_hld[0] == 0) && (((id != 0) && (g_forks[id - 1] == 1))
+		|| ((id == 0) && (g_forks[g_args.num_phi - 1] == 1))))
 	{
-		if ((frk_hld[0] == 0) && (((id != 0) && (g_forks[id - 1] == 1))
-			|| ((id == 0) && (g_forks[g_args.num_phi - 1] == 1))))
-		{
-			(id != 0) ? (g_forks[id - 1] = 0)
-				: (g_forks[g_args.num_phi - 1] = 0);
-			frk_hld[0] = 1;
-			gettimeofday(t + 2, NULL);
-			printchange(get_timestamp(t, t + 2), id, FORK_STR);
-		}
-		if ((frk_hld[1] == 0) && (g_forks[id] == 1))
-		{
-			g_forks[id] = 0;
-			frk_hld[1] = 1;
-			gettimeofday(t + 2, NULL);
-			printchange(get_timestamp(t, t + 2), id, FORK_STR);
-		}
+		(id != 0) ? (g_forks[id - 1] = 0)
+			: (g_forks[g_args.num_phi - 1] = 0);
+		frk_hld[0] = 1;
+		gettimeofday(t + 2, NULL);
+		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
-	else
+	if ((frk_hld[1] == 0) && (g_forks[id] == 1))
 	{
-		if ((frk_hld[1] == 0) && (g_forks[id] == 1))
-		{
-			g_forks[id] = 0;
-			frk_hld[1] = 1;
-			gettimeofday(t + 2, NULL);
-			printchange(get_timestamp(t, t + 2), id, FORK_STR);
-		}
-		if ((frk_hld[0] == 0) && (((id != 0) && (g_forks[id - 1] == 1))
-			|| ((id == 0) && (g_forks[g_args.num_phi - 1] == 1))))
-		{
-			(id != 0) ? (g_forks[id - 1] = 0)
-				: (g_forks[g_args.num_phi - 1] = 0);
-			frk_hld[0] = 1;
-			gettimeofday(t + 2, NULL);
-			printchange(get_timestamp(t, t + 2), id, FORK_STR);
-		}
+		g_forks[id] = 0;
+		frk_hld[1] = 1;
+		gettimeofday(t + 2, NULL);
+		printchange(get_timestamp(t, t + 2), id, FORK_STR);
 	}
 	pthread_mutex_unlock(&g_mutex_forks);
 }
