@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/30 12:06:16 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/02 12:13:22 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,24 @@ static int		set_and_check_args(int argc, char **argv)
 	g_args.time_to_eat = ft_atoul(argv[3]);
 	g_args.time_to_sleep = ft_atoul(argv[4]);
 	g_args.num_satiated = 0;
+	g_mutex_forks = malloc(sizeof(pthread_mutex_t) * g_args.num_phi);
 	if (argc == 6)
 	{
 		g_args.num_must_eat = ft_atoul(argv[5]);
 		return (!(g_args.num_phi) || !(g_args.time_to_die)
 			|| !(g_args.time_to_eat) || !(g_args.time_to_sleep)
-			|| !(g_args.num_must_eat));
+			|| !(g_args.num_must_eat) || !(g_mutex_forks));
 	}
 	else
 	{
 		g_args.num_must_eat = 0;
 		return (!(g_args.num_phi) || !(g_args.time_to_die)
-			|| !(g_args.time_to_eat) || !(g_args.time_to_sleep));
+			|| !(g_args.time_to_eat) || !(g_args.time_to_sleep)
+			|| !(g_mutex_forks));
 	}
 }
 
-static int		create_threads(pthread_t *g_phi_threads, unsigned long *phi_id)
+static int		create_threads(pthread_t *phi_threads, unsigned long *phi_id)
 {
 	unsigned long		i;
 
@@ -42,9 +44,13 @@ static int		create_threads(pthread_t *g_phi_threads, unsigned long *phi_id)
 		return (1);
 	i = 0;
 	while (i < g_args.num_phi)
+		if (pthread_mutex_init(&g_mutex_forks[i++], NULL))
+				return (1);
+	i = 0;
+	while (i < g_args.num_phi)
 	{
 		phi_id[i] = i;
-		if ((pthread_create(&g_phi_threads[i], NULL, primum_vivere,
+		if ((pthread_create(&phi_threads[i], NULL, primum_vivere,
 			(void *)phi_id[i])))
 			return (1);
 		++i;
@@ -54,13 +60,17 @@ static int		create_threads(pthread_t *g_phi_threads, unsigned long *phi_id)
 	return (0);
 }
 
-static void		garbage_collection(unsigned long **id)
+static void		garbage_collection(unsigned long **id, pthread_t **phi_threads)
 {
-	pthread_mutex_destroy(&g_mutex_forks);
+	unsigned long	i;
+
+	i = 0;
+	while (i < g_args.num_phi)
+		pthread_mutex_destroy(&g_mutex_forks[i++]);
+	free(g_mutex_forks);
 	pthread_mutex_destroy(&g_mutex_stdout);
 	pthread_mutex_destroy(&g_mutex_start);
-	free(g_forks);
-	free(g_phi_threads);
+	free(*phi_threads);
 	free(*id);
 }
 
@@ -74,24 +84,19 @@ int				main(int argc, char **argv)
 {
 	unsigned long	i;
 	unsigned long	*phi_id;
+	pthread_t		*phi_threads;
 
 	if (((argc != 5) && (argc != 6))
 		|| (set_and_check_args(argc, argv))
-		|| !(g_forks = malloc(sizeof(char) * g_args.num_phi))
-		|| !(memset(g_forks, 1, sizeof(char) * g_args.num_phi))
-		|| !(g_phi_threads = malloc(sizeof(pthread_t) * g_args.num_phi))
+		|| !(phi_threads = malloc(sizeof(pthread_t) * g_args.num_phi))
 		|| !(phi_id = malloc(sizeof(unsigned long) * g_args.num_phi))
 		|| (pthread_mutex_init(&g_mutex_start, NULL))
-		|| (pthread_mutex_init(&g_mutex_forks, NULL))
 		|| (pthread_mutex_init(&g_mutex_stdout, NULL))
-		|| (create_threads(g_phi_threads, phi_id)))
+		|| (create_threads(phi_threads, phi_id)))
 		return (1);
 	i = 0;
 	while (i < g_args.num_phi)
-		pthread_join(g_phi_threads[i++], NULL);
-/*	i = 0;
-	while (i++ < g_args.num_phi)
-		printf("fork[%lu]: %d\n", i, g_forks[i - 1]);*/
-	garbage_collection(&phi_id);
+		pthread_join(phi_threads[i++], NULL);
+	garbage_collection(&phi_id, &phi_threads);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/01/26 11:30:51 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/02 10:58:04 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ typedef struct		s_params
 }					t_program_args;
 
 t_program_args		g_args;
-char				*g_forks;
-pthread_t			*g_phi_threads;
-pthread_mutex_t		g_mutex_forks;
+pthread_mutex_t		*g_mutex_forks;
 pthread_mutex_t		g_mutex_stdout;
 pthread_mutex_t		g_mutex_start;
 
