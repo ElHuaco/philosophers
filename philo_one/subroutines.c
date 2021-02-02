@@ -6,11 +6,26 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/02 12:21:26 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/02 13:05:29 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+
+static void	new_usleep(struct timeval *time, unsigned long time_lapse)
+{
+	unsigned long	time_objective;
+	unsigned long	current_time;
+
+	gettimeofday(time + 2, NULL);
+	current_time = get_timestamp(time, time + 2);
+	time_objective = current_time + time_lapse;
+	while ((current_time = get_timestamp(time, time + 2)) < time_objective)
+	{
+		usleep(100);
+		gettimeofday(time + 2, NULL);
+	}
+}
 
 static void	capto_furca(unsigned long id, struct timeval *time)
 {
@@ -38,7 +53,7 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 {
 	gettimeofday(time + 1, NULL);
 	printchange(get_timestamp(time, time + 1), id, EAT_STR);
-	usleep(g_args.time_to_eat * 1000);
+	new_usleep(time, g_args.time_to_eat);
 	(*meals)++;
 	if ((g_args.num_must_eat) && (*meals == g_args.num_must_eat))
 	{
@@ -51,9 +66,7 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 	pthread_mutex_unlock(&g_mutex_forks[id]);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, SLEEP_STR);
-	usleep(g_args.time_to_sleep * 1000);
-	gettimeofday(time + 2, NULL);
-	printchange(get_timestamp(time, time + 2), id, THINK_STR);
+	new_usleep(time, g_args.time_to_sleep);
 }
 
 static void	tunc_moriatur(unsigned long id, struct timeval *time)
@@ -78,11 +91,12 @@ void		*primum_vivere(void *philo_id)
 	gettimeofday(time, NULL);
 	gettimeofday(time + 1, NULL);
 //	pthread_mutex_unlock(&g_mutex_start);
-	gettimeofday(time + 2, NULL);
-	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
+		gettimeofday(time + 2, NULL);
+		printchange(get_timestamp(time, time + 2), id, THINK_STR);
 		capto_furca(id, time);
+		tunc_moriatur(id, time);
 		philosophare(id, time, &meals_had);
 		tunc_moriatur(id, time);
 	}
