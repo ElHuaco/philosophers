@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/02 13:05:29 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/02 13:21:39 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ static void	new_usleep(struct timeval *time, unsigned long time_lapse)
 	gettimeofday(time + 2, NULL);
 	current_time = get_timestamp(time, time + 2);
 	time_objective = current_time + time_lapse;
-	while ((current_time = get_timestamp(time, time + 2)) < time_objective)
+	while (current_time < time_objective)
 	{
 		usleep(100);
 		gettimeofday(time + 2, NULL);
+		current_time = get_timestamp(time, time + 2);
 	}
 }
 
@@ -84,19 +85,16 @@ void		*primum_vivere(void *philo_id)
 	unsigned long		id;
 	struct timeval		time[3];
 	int					meals_had;
-
+//g_forks de nuevo
 	id = *(unsigned long *)(&philo_id);
 	meals_had = 0;
-//	pthread_mutex_lock(&g_mutex_start);
 	gettimeofday(time, NULL);
 	gettimeofday(time + 1, NULL);
-//	pthread_mutex_unlock(&g_mutex_start);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
 		gettimeofday(time + 2, NULL);
 		printchange(get_timestamp(time, time + 2), id, THINK_STR);
 		capto_furca(id, time);
-		tunc_moriatur(id, time);
 		philosophare(id, time, &meals_had);
 		tunc_moriatur(id, time);
 	}
