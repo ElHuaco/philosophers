@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/02 13:21:39 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/03 11:56:55 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,22 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 	new_usleep(time, g_args.time_to_sleep);
 }
 
-static void	tunc_moriatur(unsigned long id, struct timeval *time)
+static void	*tunc_moriatur(void *d)
 {
-	gettimeofday(time + 2, NULL);
-	if (get_timestamp(time + 1, time + 2) > g_args.time_to_die)
+	t_monitor	*data;
+
+	if ((g_args.deadflag) || (g_args.num_satiated == g_args.num_phi))
+		return (NULL);
+	data = (t_monitor *)d;
+	usleep(g_args.time_to_die * 1000);
+	gettimeofday(data->time + 2, NULL);
+	if (get_timestamp(data->time + 1, data->time + 2) >= g_args.time_to_die)
 	{
-		printchange(get_timestamp(time, time + 2), id, DEATH_STR);
+		printchange(get_timestamp(data->time, data->time + 2), data->id,
+			DEATH_STR);
 		g_args.deadflag = 1;
 	}
+	return (NULL);
 }
 
 void		*primum_vivere(void *philo_id)
@@ -85,18 +93,24 @@ void		*primum_vivere(void *philo_id)
 	unsigned long		id;
 	struct timeval		time[3];
 	int					meals_had;
-//g_forks de nuevo
+	pthread_t			monitor;
+	t_monitor			monitor_data;
+
 	id = *(unsigned long *)(&philo_id);
 	meals_had = 0;
+	monitor_data.id = id;
 	gettimeofday(time, NULL);
 	gettimeofday(time + 1, NULL);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
 		gettimeofday(time + 2, NULL);
 		printchange(get_timestamp(time, time + 2), id, THINK_STR);
+		pthread_detach(monitor);
+		monitor_data.time = time;
+		pthread_create(&monitor, NULL, tunc_moriatur, (void *)&monitor_data);
 		capto_furca(id, time);
 		philosophare(id, time, &meals_had);
-		tunc_moriatur(id, time);
 	}
+	pthread_detach(monitor);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/02 12:13:22 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/03 11:19:56 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int		create_threads(pthread_t *phi_threads, unsigned long *phi_id)
 	i = 0;
 	while (i < g_args.num_phi)
 		if (pthread_mutex_init(&g_mutex_forks[i++], NULL))
-				return (1);
+			return (1);
 	i = 0;
 	while (i < g_args.num_phi)
 	{
@@ -97,6 +97,11 @@ int				main(int argc, char **argv)
 	i = 0;
 	while (i < g_args.num_phi)
 		pthread_join(phi_threads[i++], NULL);
+	while (!g_args.deadflag)
+		usleep(100);
+	i = 0;
+	while (i < g_args.num_phi)
+		pthread_detach(phi_threads[i++]);
 	garbage_collection(&phi_id, &phi_threads);
 	return (0);
 }

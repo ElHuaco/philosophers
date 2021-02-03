@@ -6,7 +6,7 @@
 #    By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/18 17:33:29 by aleon-ca          #+#    #+#              #
-#    Updated: 2021/01/26 12:30:13 by aleon-ca         ###   ########.fr        #
+#    Updated: 2021/02/03 11:21:43 by aleon-ca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,9 @@ OBJS = $(SRCS:.c=.o)
 NAME = philo_one
 
 #INCLUDE = -I. -lpthread
-#RACE_BUGS = -g -fsanitize=thread
+RACE_BUGS = -g -fsanitize=thread
 FLAGS = -Werror -Wextra -Wall
-GCC = gcc $(FLAGS)
+GCC = gcc $(FLAGS) $(RACE_BUGS)
 
 RM = rm -f
 

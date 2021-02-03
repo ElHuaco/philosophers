@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/02 10:58:04 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/03 11:00:21 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@ typedef struct		s_params
 	int				deadflag;
 	unsigned long	num_satiated;
 }					t_program_args;
+
+typedef struct		s_monitor_data
+{
+	struct timeval	*time;
+	unsigned long	id;
+}					t_monitor;
 
 t_program_args		g_args;
 pthread_mutex_t		*g_mutex_forks;
