@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/03 16:48:43 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/04 14:38:03 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,17 @@ static int	capto_furca(unsigned long id, struct timeval *time)
 	unsigned long	left;
 
 	left = (id != 0) ? id - 1 : g_args.num_phi - 1;
+	gettimeofday(time + 2, NULL);
 	pthread_mutex_lock(&g_mutex_waiter);
-	if ((g_forks[id] == 1) && (g_forks[left] == 1))
+	if ((g_forks[id] == 1) && (g_forks[left] == 1)
+		&& ((g_queue == id) || (g_queue == g_args.num_phi)
+		|| ((g_queue > id) && ((g_queue - id != 1)
+			&& (g_queue - id != g_args.num_phi)))
+		|| ((g_queue < id) && ((id - g_queue != 1)
+			&& (id - g_queue != g_args.num_phi)))))
 	{
+		if (g_queue == id)
+			g_queue = g_args.num_phi;
 		g_forks[id] = 0;
 		gettimeofday(time + 2, NULL);
 		printchange(get_timestamp(time, time + 2), id, FORK_STR);
@@ -44,6 +52,16 @@ static int	capto_furca(unsigned long id, struct timeval *time)
 		printchange(get_timestamp(time, time + 2), id, FORK_STR);
 		pthread_mutex_unlock(&g_mutex_waiter);
 		return (1);
+	}
+	else if ((((g_forks[id]) && !g_forks[left])
+		|| ((!g_forks[id]) && (g_forks[left])))
+		&& (get_timestamp(time + 1, time + 2) > g_args.time_to_eat
+			+ g_args.time_to_sleep))
+	{
+		g_queue = id;
+//		printchange(get_timestamp(time, time + 2), id, "is in the queue\n");
+		pthread_mutex_unlock(&g_mutex_waiter);
+		return (0);
 	}
 	else
 	{
@@ -84,6 +102,7 @@ static void	tunc_moriatur(unsigned long id, struct timeval *time)
 	if (get_timestamp(time + 1, time + 2) >= g_args.time_to_die)
 	{
 		printchange(get_timestamp(time, time + 2), id, DEATH_STR);
+		printchange(get_timestamp(time, time + 2), g_queue, "was in the queue\n");
 		g_args.deadflag = 1;
 	}
 }

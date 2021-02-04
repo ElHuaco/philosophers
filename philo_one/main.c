@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/03 16:45:57 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/04 13:07:49 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static int		set_and_check_args(int argc, char **argv)
 	g_args.time_to_eat = ft_atoul(argv[3]);
 	g_args.time_to_sleep = ft_atoul(argv[4]);
 	g_args.num_satiated = 0;
+	g_queue = g_args.num_phi;
 	if (argc == 6)
 	{
 		g_args.num_must_eat = ft_atoul(argv[5]);

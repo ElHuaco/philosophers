@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/03 19:41:02 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/04 12:59:27 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,8 @@ typedef struct		s_params
 	unsigned long	num_satiated;
 }					t_program_args;
 
-typedef struct		s_queue
-{
-	void			*content;
-	struct s_queue	*next;
-}					t_list;
-
 t_program_args		g_args;
-t_list				g_queue;
+unsigned long		g_queue;
 char				*g_forks;
 pthread_mutex_t		g_mutex_waiter;
 pthread_mutex_t		g_mutex_stdout;
@@ -53,12 +47,6 @@ int					ft_strlen(char *str);
 unsigned long		ft_atoul(char *str);
 char				*ft_ultoa(unsigned long n);
 void				printchange(unsigned long t, unsigned long i, char *s);
-
-t_list				*ft_lstnew(void *content);
-t_list				*ft_last(t_list *lst);
-void				ft_lstadd_back(t_list **alst, t_list *new);
-void				ft_lstdel_back(t_list *alst);
-void				ft_lstclear(t_list **alst);
 
 unsigned long		get_timestamp(struct timeval *t, struct timeval *u);
 
