@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/04 19:17:27 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/04 19:39:01 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
 		return (1);
 	}
 	else if ((((g_forks[id]) && !g_forks[left])
-		|| ((!g_forks[id]) && (g_forks[left]))) && (g_queue != id)
+		|| ((!g_forks[id]) && (g_forks[left]))) && (g_queue == g_args.num_phi)
 		&& get_timestamp(time + 1, time + 2) > g_args.time_to_eat
-		+ (*meals > 0) * (g_args.time_to_sleep + 10))
+		+ (*meals > 0) * (g_args.time_to_sleep))
 	{
 		g_queue = id;
 		printchange(get_timestamp(time, time + 2), id, "is in the queue\n");
