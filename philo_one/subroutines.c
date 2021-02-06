@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/06 13:00:41 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/06 14:37:11 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ static void	new_usleep(struct timeval *time, unsigned long time_lapse)
 	}
 }
 
+static int	is_allowed_eat(unsigned long id, unsigned long left)
+{
+	return ((g_forks[id] == 1) && (g_forks[left] == 1)
+		&& ((g_queue == g_args.num_phi) || (g_queue == id)
+			|| ((g_queue > id)
+			&& (g_queue - id != 1) && (g_queue - id != g_args.num_phi - 1))
+			|| ((g_queue < id)
+			&& (id - g_queue != 1) && (id - g_queue != g_args.num_phi - 1))))
+}
+
 static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
 {
 	unsigned long	left;
@@ -35,23 +45,13 @@ static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
 	left = (id != 0) ? id - 1 : g_args.num_phi - 1;
 	gettimeofday(time + 2, NULL);
 	pthread_mutex_lock(&g_mutex_waiter);
-	if ((g_forks[id] == 1) && (g_forks[left] == 1)
-		&& ((g_queue == g_args.num_phi) || (g_queue == id)
-			|| ((g_queue > id)
-				&& (g_queue - id != 1) && (g_queue - id != g_args.num_phi - 1))
-			|| ((g_queue < id)
-				&& (id - g_queue != 1) && (id - g_queue != g_args.num_phi - 1))))
+	if (is_allowed_eat(id, left))
 	{
 		if (g_queue == id)
-		{
 			g_queue = g_args.num_phi;
-			printchange(get_timestamp(time, time + 2), id, "left the queue\n");
-		}
 		g_forks[id] = 0;
-		gettimeofday(time + 2, NULL);
 		printchange(get_timestamp(time, time + 2), id, FORK_STR);
 		g_forks[left] = 0;
-		gettimeofday(time + 2, NULL);
 		printchange(get_timestamp(time, time + 2), id, FORK_STR);
 		pthread_mutex_unlock(&g_mutex_waiter);
 		return (1);
@@ -59,13 +59,8 @@ static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
 	else if ((((g_forks[id]) && !g_forks[left])
 		|| ((!g_forks[id]) && (g_forks[left]))) && (g_queue == g_args.num_phi)
 		&& get_timestamp(time + 1, time + 2) > g_args.time_to_eat
-		+ (*meals > 0) * (g_args.time_to_sleep))
-	{
+		+ (*meals > 0) * g_args.time_to_sleep)
 		g_queue = id;
-		printchange(get_timestamp(time, time + 2), id, "is in the queue\n");
-		pthread_mutex_unlock(&g_mutex_waiter);
-		return (0);
-	}
 	pthread_mutex_unlock(&g_mutex_waiter);
 	return (0);
 }
@@ -96,16 +91,6 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 }
 
-static void	tunc_moriatur(unsigned long id, struct timeval *time)
-{
-	gettimeofday(time + 2, NULL);
-	if (get_timestamp(time + 1, time + 2) >= g_args.time_to_die)
-	{
-		printchange(get_timestamp(time, time + 2), id, DEATH_STR);
-		g_args.deadflag = 1;
-	}
-}
-
 void		*primum_vivere(void *philo_id)
 {
 	unsigned long		id;
@@ -122,7 +107,12 @@ void		*primum_vivere(void *philo_id)
 	{
 		if (capto_furca(id, time, &meals_had))
 			philosophare(id, time, &meals_had);
-		tunc_moriatur(id, time);
+		gettimeofday(time + 2, NULL);
+		if (get_timestamp(time + 1, time + 2) >= g_args.time_to_die)
+		{
+			printchange(get_timestamp(time, time + 2), id, DEATH_STR);
+			g_args.deadflag = 1;
+		}
 	}
 	return (NULL);
 }
