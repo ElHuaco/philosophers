@@ -6,13 +6,13 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/04 12:59:27 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/06 14:39:09 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_ONE_H
 # define PHILO_ONE_H
-#include <stdio.h>
+
 # include <string.h>
 # include <stdlib.h>
 # include <unistd.h>

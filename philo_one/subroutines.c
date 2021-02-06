@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/06 14:37:11 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/06 14:38:29 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	is_allowed_eat(unsigned long id, unsigned long left)
 			|| ((g_queue > id)
 			&& (g_queue - id != 1) && (g_queue - id != g_args.num_phi - 1))
 			|| ((g_queue < id)
-			&& (id - g_queue != 1) && (id - g_queue != g_args.num_phi - 1))))
+			&& (id - g_queue != 1) && (id - g_queue != g_args.num_phi - 1))));
 }
 
 static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
