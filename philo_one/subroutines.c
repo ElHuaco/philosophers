@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/04 19:42:31 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/06 13:00:41 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,17 @@ static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
 	gettimeofday(time + 2, NULL);
 	pthread_mutex_lock(&g_mutex_waiter);
 	if ((g_forks[id] == 1) && (g_forks[left] == 1)
-		&& ((g_queue == id)
-			|| (g_queue == g_args.num_phi)
-/*			|| ((g_queue > id) && ((g_queue - id != 1)
-				&& (g_queue - id != g_args.num_phi)))
-			|| ((g_queue < id) && ((id - g_queue != 1)
-				&& (id - g_queue != g_args.num_phi)))*/))
+		&& ((g_queue == g_args.num_phi) || (g_queue == id)
+			|| ((g_queue > id)
+				&& (g_queue - id != 1) && (g_queue - id != g_args.num_phi - 1))
+			|| ((g_queue < id)
+				&& (id - g_queue != 1) && (id - g_queue != g_args.num_phi - 1))))
 	{
 		if (g_queue == id)
+		{
 			g_queue = g_args.num_phi;
+			printchange(get_timestamp(time, time + 2), id, "left the queue\n");
+		}
 		g_forks[id] = 0;
 		gettimeofday(time + 2, NULL);
 		printchange(get_timestamp(time, time + 2), id, FORK_STR);
@@ -57,18 +59,15 @@ static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
 	else if ((((g_forks[id]) && !g_forks[left])
 		|| ((!g_forks[id]) && (g_forks[left]))) && (g_queue == g_args.num_phi)
 		&& get_timestamp(time + 1, time + 2) > g_args.time_to_eat
-		+ (*meals > 0) * (g_args.time_to_sleep) + 10)
+		+ (*meals > 0) * (g_args.time_to_sleep))
 	{
 		g_queue = id;
 		printchange(get_timestamp(time, time + 2), id, "is in the queue\n");
 		pthread_mutex_unlock(&g_mutex_waiter);
 		return (0);
 	}
-	else
-	{
-		pthread_mutex_unlock(&g_mutex_waiter);
-		return (0);
-	}
+	pthread_mutex_unlock(&g_mutex_waiter);
+	return (0);
 }
 
 static void	philosophare(unsigned long id, struct timeval *time, int *meals)
