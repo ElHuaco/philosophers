@@ -6,11 +6,11 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/08 09:55:34 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/08 12:49:28 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_two.h"
 
 static void	new_usleep(struct timeval *time, unsigned long time_lapse)
 {
@@ -28,67 +28,70 @@ static void	new_usleep(struct timeval *time, unsigned long time_lapse)
 	}
 }
 
-static int	is_allowed_eat(unsigned long id, unsigned long left)
+static void	capto_furca(unsigned long id, struct timeval *time)
 {
-	return ((g_forks[id] == 1) && (g_forks[left] == 1)
-		&& ((g_queue == g_args.num_phi) || (g_queue == id)
-			|| ((g_queue > id)
-			&& (g_queue - id != 1) && (g_queue - id != g_args.num_phi - 1))
-			|| ((g_queue < id)
-			&& (id - g_queue != 1) && (id - g_queue != g_args.num_phi - 1))));
-}
+	sem_t	*sem_fork;
 
-static int	capto_furca(unsigned long id, struct timeval *time, int *meals)
-{
-	unsigned long	left;
-
-	left = (id != 0) ? id - 1 : g_args.num_phi - 1;
+	sem_fork = sem_open("forks", 0);
+	sem_wait(sem_fork);
 	gettimeofday(time + 2, NULL);
-	pthread_mutex_lock(&g_mutex_waiter);
-	if (is_allowed_eat(id, left))
-	{
-		if (g_queue == id)
-			g_queue = g_args.num_phi;
-		g_forks[id] = 0;
-		printchange(get_timestamp(time, time + 2), id, FORK_STR);
-		g_forks[left] = 0;
-		printchange(get_timestamp(time, time + 2), id, FORK_STR);
-		pthread_mutex_unlock(&g_mutex_waiter);
-		return (1);
-	}
-	else if ((((g_forks[id]) && !g_forks[left])
-		|| ((!g_forks[id]) && (g_forks[left]))) && (g_queue == g_args.num_phi)
-		&& get_timestamp(time + 1, time + 2) > g_args.time_to_eat
-		+ (*meals > 0) * g_args.time_to_sleep)
-		g_queue = id;
-	pthread_mutex_unlock(&g_mutex_waiter);
-	return (0);
+	printchange(get_timestamp(time, time + 2), id, FORK_STR);
+	sem_wait(sem_fork);
+	gettimeofday(time + 2, NULL);
+	printchange(get_timestamp(time, time + 2), id, FORK_STR);
+	sem_close(sem_fork);
 }
 
 static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 {
-	unsigned long	left;
+	sem_t	*sem_fork;
+	sem_t	*sem_meals;
 
-	left = (id != 0) ? id - 1 : g_args.num_phi - 1;
+	sem_fork = sem_open("forks", 0);
+	sem_meals = sem_open("meals", 0);
 	gettimeofday(time + 1, NULL);
 	printchange(get_timestamp(time, time + 1), id, EAT_STR);
 	new_usleep(time, g_args.time_to_eat);
-	pthread_mutex_lock(&g_mutex_waiter);
-	g_forks[id] = 1;
-	g_forks[left] = 1;
-	pthread_mutex_unlock(&g_mutex_waiter);
 	(*meals)++;
 	if ((g_args.num_must_eat) && (*meals == g_args.num_must_eat))
 	{
-		pthread_mutex_lock(&g_mutex_meals);
+		sem_wait(sem_meals);
 		g_args.num_satiated++;
-		pthread_mutex_unlock(&g_mutex_meals);
+		sem_post(sem_meals);
 	}
+	sem_post(sem_fork);
+	sem_post(sem_fork);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, SLEEP_STR);
 	new_usleep(time, g_args.time_to_sleep);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
+	sem_close(sem_fork);
+	sem_close(sem_meals);
+}
+
+static void	*tunc_moriatur(void *data)
+{
+	unsigned long	id;
+	struct timeval	*time_origin;
+	struct timeval	*time_last_meal;
+	struct timeval	current_time;
+	unsigned long	time_lapse;
+
+	id = (*(t_monitor *)data).id;
+	time_origin = (*(t_monitor *)data).time_zero;
+	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
+	{
+		gettimeofday(&current_time, NULL);
+		time_last_meal = (*(t_monitor *)data).time_eat;
+		if (get_timestamp(time_last_meal, &current_time) >= g_args.time_to_die)
+		{
+			printchange(get_timestamp(time_origin, &current_time),
+				id, DEATH_STR);
+			g_args.deadflag = 1;
+		}
+	}
+	return (NULL);
 }
 
 void		*primum_vivere(void *philo_id)
@@ -96,25 +99,20 @@ void		*primum_vivere(void *philo_id)
 	unsigned long		id;
 	struct timeval		time[3];
 	int					meals_had;
-	unsigned long		time_lapse;
+	pthread_t			the_reaper;
+	t_monitor			data;
 
 	id = *(unsigned long *)(&philo_id);
+	data.id = id;
 	meals_had = 0;
-	gettimeofday(time, NULL);
-	gettimeofday(time + 1, NULL);
-	gettimeofday(time + 2, NULL);
+	init_timestamps(time, &data);
+	pthread_create(&the_reaper, NULL, tunc_moriatur, (void *)&data);
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
-		if (capto_furca(id, time, &meals_had))
-			philosophare(id, time, &meals_had);
-		gettimeofday(time + 2, NULL);
-		if ((time_lapse = get_timestamp(time + 1, time + 2))
-			>= g_args.time_to_die)
-		{
-			printchange(time_lapse, id, DEATH_STR);
-			g_args.deadflag = 1;
-		}
+		capto_furca(id, time);
+		philosophare(id, time, &meals_had);
 	}
+	pthread_detach(the_reaper);
 	return (NULL);
 }
