@@ -6,13 +6,13 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 09:05:08 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/08 12:22:27 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 09:03:19 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_TWO_H
 # define PHILO_TWO_H
-#include <stdio.h>
+
 # include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -45,15 +45,25 @@ typedef struct		s_monitor
 }					t_monitor;
 
 t_program_args		g_args;
+sem_t				*g_sem_forks;
+sem_t				*g_sem_stdio;
+sem_t				*g_sem_meals;
 
+/*
+**	utils.c
+*/
 int					ft_strlen(char *str);
 unsigned long		ft_atoul(char *str);
 char				*ft_ultoa(unsigned long n);
-void				printchange(unsigned long t, unsigned long i, char *s);
-
-unsigned long		get_timestamp(struct timeval *t, struct timeval *u);
-void				init_timestamps(struct timeval *t, t_monitor *data);
-
+void				printchange(unsigned long tme, unsigned long id, char *str);
+/*
+**	main.c
+*/
+unsigned long		get_timestamp(struct timeval *time1, struct timeval *time2);
+void				init_timestamps(struct timeval **time_add, t_monitor *data);
+/*
+**	subroutines.c
+*/
 void				*primum_vivere(void *philo_id);
 
 #endif
