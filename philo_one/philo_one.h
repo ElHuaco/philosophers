@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:34:28 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/06 14:39:09 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 12:58:19 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,20 @@ char				*g_forks;
 pthread_mutex_t		g_mutex_waiter;
 pthread_mutex_t		g_mutex_stdout;
 pthread_mutex_t		g_mutex_meals;
-
+/*
+**	utils.c
+*/
 int					ft_strlen(char *str);
 unsigned long		ft_atoul(char *str);
 char				*ft_ultoa(unsigned long n);
 void				printchange(unsigned long t, unsigned long i, char *s);
-
+/*
+**	main.c
+*/
 unsigned long		get_timestamp(struct timeval *t, struct timeval *u);
-
+/*
+**	subroutines.c
+*/
 void				*primum_vivere(void *philo_id);
 
 #endif
