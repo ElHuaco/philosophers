@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/08 12:33:10 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 09:32:37 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ void			printchange(unsigned long tm, unsigned long id, char *s)
 	char		*id_str;
 	sem_t		*sem_stdio;
 
-	if ((g_args.deadflag))
+	if ((g_args.deadflag) || ((g_args.num_must_eat)
+		&& (g_args.num_satiated == g_args.num_phi)))
 		return ;
 	sem_stdio = sem_open("stdio", 0);
 	time_str = ft_ultoa(tm);

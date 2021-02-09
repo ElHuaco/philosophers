@@ -6,11 +6,11 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/19 12:12:29 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 09:36:16 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 10:44:36 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_three.h"
 
 int				ft_strlen(char *str)
 {
@@ -69,23 +69,20 @@ char			*ft_ultoa(unsigned long n)
 	return (result);
 }
 
-void			printchange(unsigned long tm, unsigned long id, char *s)
+void			pch(unsigned long t, unsigned long i, char *s, t_shared *d)
 {
 	char		*time_str;
 	char		*id_str;
 
-	if ((g_args.deadflag) || ((g_args.num_must_eat)
-		&& (g_args.num_satiated == g_args.num_phi)))
-		return ;
-	time_str = ft_ultoa(tm);
-	id_str = ft_ultoa(id + 1);
-	pthread_mutex_lock(&g_mutex_stdout);
+	time_str = ft_ultoa(t);
+	id_str = ft_ultoa(i + 1);
+	sem_wait(d->sem_stdio);
 	write(1, time_str, ft_strlen(time_str));
 	write(1, " ", 1);
 	write(1, id_str, ft_strlen(id_str));
 	write(1, " ", 1);
 	write(1, s, ft_strlen(s));
-	pthread_mutex_unlock(&g_mutex_stdout);
+	sem_post(d->sem_stdio);
 	free(id_str);
 	free(time_str);
 }
