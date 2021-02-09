@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 12:42:25 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 12:54:38 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ int				main(int argc, char **argv)
 		if (!(pid = fork()))
 			are_satiated(&data);
 	sem_wait(data.sem_dead);
-	kill(pid, SIGKILL);
+	if (argc == 6)
+		kill(pid, SIGKILL);
 	i = 0;
 	while (i < g_args.num_phi)
 		kill(data.pid[i++], SIGKILL);

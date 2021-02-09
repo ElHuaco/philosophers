@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 09:18:56 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 12:14:59 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 12:53:45 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void		primum_vivere(unsigned long id, t_shared *data)
 	time = malloc(sizeof(struct timeval) * 3);
 	init_timestamps(&time, &monitor_data);
 	pthread_create(&the_reaper, NULL, tunc_moriatur, (void *)&monitor_data);
+	pthread_detach(the_reaper);
 	pch(get_timestamp(time, time + 2), id, THINK_STR, data);
 	while (1)
 	{
