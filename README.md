@@ -3,7 +3,7 @@ _"The challenge in the dining philosophers problem is to design a protocol so th
 ![](https://miro.medium.com/max/544/1*kTNv4zAJfdhvM9l0LiwUaA.png)
 
 TODO:
-- Queue solucionada junto al monitor??
+- monitor troubles de comer entre asignación last meal y chequeo 
 
 Teoría:
 - [Tutorial 1](https://hpc.llnl.gov/training/tutorials/introduction-parallel-computing-tutorial)

@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 10:35:35 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 12:42:25 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,29 @@ static int		set_and_check_args(int argc, char **argv)
 
 static int		set_data(t_shared *data)
 {
+	unsigned long	i;
+	char			*str;
+
+	if (!(data->sem_meals = malloc(sizeof(sem_t *) * g_args.num_phi)))
+		return (1);
+	i = 0;
+	while (i < g_args.num_phi)
+	{
+		str = ft_ultoa(i);
+		sem_unlink(str);
+		if (!(data->sem_meals[i++] = sem_open(str, O_CREAT, 0664, 0)))
+			return (1);
+		free(str);
+	}
 	sem_unlink("forks");
 	sem_unlink("stdio");
-	sem_unlink("meals");
 	sem_unlink("dead");
 	if (!(data->sem_dead = sem_open("dead", O_CREAT, 0664, 0))
 		|| !(data->sem_forks = sem_open("forks", O_CREAT, 0664, g_args.num_phi))
 		|| !(data->sem_stdio = sem_open("stdio", O_CREAT, 0664, 1))
-		|| !(data->sem_meals = sem_open("meals", O_CREAT, 0664, 1))
 		|| !(data->pid = malloc(sizeof(int) * g_args.num_phi)))
 		return (1);
-	else
-		return (0);
+	return (0);
 }
 
 static void		create_childs(t_shared *data)
@@ -64,9 +75,31 @@ static void		create_childs(t_shared *data)
 	}
 }
 
+static void		destroy_semaphores(t_shared *data)
+{
+	unsigned long	i;
+	char			*str;
+
+	sem_close(data->sem_forks);
+	sem_close(data->sem_stdio);
+	sem_close(data->sem_dead);
+	sem_unlink("forks");
+	sem_unlink("stdio");
+	sem_unlink("dead");
+	i = 0;
+	while (i < g_args.num_phi)
+	{
+		str = ft_ultoa(i);
+		sem_close(data->sem_meals[i++]);
+		sem_unlink(str);
+		free(str);
+	}
+}
+
 int				main(int argc, char **argv)
 {
 	t_shared		data;
+	int				pid;
 	unsigned long	i;
 
 	if (((argc != 5) && (argc != 6))
@@ -74,18 +107,16 @@ int				main(int argc, char **argv)
 		|| (set_data(&data)))
 		return (1);
 	create_childs(&data);
+	if (argc == 6)
+		if (!(pid = fork()))
+			are_satiated(&data);
 	sem_wait(data.sem_dead);
+	kill(pid, SIGKILL);
 	i = 0;
 	while (i < g_args.num_phi)
 		kill(data.pid[i++], SIGKILL);
 	free(data.pid);
-	sem_close(data.sem_forks);
-	sem_close(data.sem_stdio);
-	sem_close(data.sem_meals);
-	sem_close(data.sem_dead);
-	sem_unlink("forks");
-	sem_unlink("stdio");
-	sem_unlink("meals");
-	sem_unlink("dead");
+	destroy_semaphores(&data);
+	free(data.sem_meals);
 	return (0);
 }

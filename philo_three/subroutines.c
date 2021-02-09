@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 09:18:56 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 10:44:14 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 12:14:59 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,7 @@ static void	f(unsigned long id, struct timeval *time, int *meals, t_shared *dat)
 	new_usleep(time, g_args.time_to_eat);
 	(*meals)++;
 	if ((g_args.num_must_eat) && (*meals == g_args.num_must_eat))
-	{
-		sem_wait(dat->sem_meals);
-		dat->num_satiated++;
-		sem_post(dat->sem_meals);
-	}
+		sem_post(dat->sem_meals[id]);
 	sem_post(dat->sem_forks);
 	sem_post(dat->sem_forks);
 	gettimeofday(time + 2, NULL);
@@ -62,29 +58,24 @@ static void	f(unsigned long id, struct timeval *time, int *meals, t_shared *dat)
 static void	*tunc_moriatur(void *monitor_data)
 {
 	unsigned long	id;
-	struct timeval	*time_origin;
-	struct timeval	*time_last_meal;
 	struct timeval	current_time;
 	t_monitor		*casted_mon;
 
 	casted_mon = (t_monitor *)monitor_data;
 	id = casted_mon->id;
-	time_origin = casted_mon->time_zero;
 	while (1)
 	{
-		usleep(5);
+		usleep(10);
 		gettimeofday(&current_time, NULL);
-		time_last_meal = casted_mon->time_eat;
-		if (get_timestamp(time_last_meal, &current_time) > g_args.time_to_die)
+		if (get_timestamp(casted_mon->time_eat, &current_time)
+			> g_args.time_to_die)
 		{
-			pch(get_timestamp(time_origin, &current_time),
+			pch(get_timestamp(casted_mon->time_zero, &current_time),
 				id, DEATH_STR, casted_mon->data);
 			sem_post(casted_mon->data->sem_dead);
+			return (NULL);
 		}
-		else if (casted_mon->data->num_satiated == g_args.num_phi)
-			sem_post(casted_mon->data->sem_dead);
 	}
-	return (NULL);
 }
 
 void		primum_vivere(unsigned long id, t_shared *data)

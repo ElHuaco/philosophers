@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 09:00:57 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 11:02:51 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,23 +73,19 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 static void	*tunc_moriatur(void *data)
 {
 	unsigned long	id;
-	struct timeval	*time_origin;
-	struct timeval	*time_last_meal;
 	struct timeval	current_time;
-	unsigned long	time_lapse;
+	t_monitor		*monitor_data;
 
-	id = ((t_monitor *)data)->id;
-	time_origin = ((t_monitor *)data)->time_zero;
+	monitor_data = (t_monitor *)data;
+	id = monitor_data->id;
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
-		usleep(5);
+		usleep(10);
 		gettimeofday(&current_time, NULL);
-		time_last_meal = ((t_monitor *)data)->time_eat;
-		if ((time_lapse = get_timestamp(time_last_meal, &current_time))
+		if ((time_lapse = get_timestamp(monitor_data->time_eat, &current_time))
 			> g_args.time_to_die)
 		{
-//printchange(get_timestamp(time_last_meal, &current_time), id, "LAST_MEAL\n");
-			printchange(get_timestamp(time_origin, &current_time),
+			printchange(get_timestamp(monitor_data->time_zero, &current_time),
 				id, DEATH_STR);
 			g_args.deadflag = 1;
 		}

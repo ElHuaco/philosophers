@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 09:07:04 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 10:38:44 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/09 12:43:01 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ typedef struct		s_shared
 	sem_t			*sem_dead;
 	sem_t			*sem_forks;
 	sem_t			*sem_stdio;
-	sem_t			*sem_meals;
-	unsigned long	num_satiated;
+	sem_t			**sem_meals;
 	int				*pid;
 }					t_shared;
 
@@ -73,5 +72,8 @@ void				init_timestamps(struct timeval **time_add, t_monitor *data);
 **	subroutines.c
 */
 void				primum_vivere(unsigned long id, t_shared *data);
-
+/*
+**	meal_monitor.c
+*/
+void				are_satiated(t_shared *data);
 #endif
