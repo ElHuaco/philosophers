@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 09:03:06 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/10 09:16:46 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ static int		create_threads(pthread_t *phi_threads, unsigned long *phi_id)
 {
 	unsigned long	i;
 
+	if (!(g_sem_forks = sem_open("forks", O_CREAT, 0664, g_args.num_phi))
+		|| !(g_sem_stdio = sem_open("stdio", O_CREAT, 0664, 1))
+		|| !(g_sem_meals = sem_open("meals", O_CREAT, 0664, 1))
+		|| !(g_sem_time = sem_open("time", O_CREAT, 0664, 1)))
+		return (1);
 	i = 0;
 	while (i < g_args.num_phi)
 	{
@@ -76,13 +81,11 @@ int				main(int argc, char **argv)
 	sem_unlink("forks");
 	sem_unlink("stdio");
 	sem_unlink("meals");
+	sem_unlink("time");
 	if (((argc != 5) && (argc != 6))
 		|| (set_and_check_args(argc, argv))
 		|| !(phi_id = malloc(sizeof(unsigned long) * g_args.num_phi))
 		|| !(phi_threads = malloc(sizeof(pthread_t) * g_args.num_phi))
-		|| !(g_sem_forks = sem_open("forks", O_CREAT, 0664, g_args.num_phi))
-		|| !(g_sem_stdio = sem_open("stdio", O_CREAT, 0664, 1))
-		|| !(g_sem_meals = sem_open("meals", O_CREAT, 0664, 1))
 		|| (create_threads(phi_threads, phi_id)))
 		return (1);
 	free(phi_threads);
@@ -90,8 +93,10 @@ int				main(int argc, char **argv)
 	sem_close(g_sem_forks);
 	sem_close(g_sem_stdio);
 	sem_close(g_sem_meals);
+	sem_close(g_sem_time);
 	sem_unlink("forks");
 	sem_unlink("stdio");
 	sem_unlink("meals");
+	sem_unlink("time");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 09:05:08 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 09:03:19 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/10 09:07:53 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ t_program_args		g_args;
 sem_t				*g_sem_forks;
 sem_t				*g_sem_stdio;
 sem_t				*g_sem_meals;
+sem_t				*g_sem_time;
 
 /*
 **	utils.c

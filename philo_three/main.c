@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 12:54:38 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/10 08:44:26 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,14 @@ static int		set_data(t_shared *data)
 			return (1);
 		free(str);
 	}
+	sem_unlink("time");
 	sem_unlink("forks");
 	sem_unlink("stdio");
 	sem_unlink("dead");
 	if (!(data->sem_dead = sem_open("dead", O_CREAT, 0664, 0))
 		|| !(data->sem_forks = sem_open("forks", O_CREAT, 0664, g_args.num_phi))
 		|| !(data->sem_stdio = sem_open("stdio", O_CREAT, 0664, 1))
+		|| !(data->sem_time = sem_open("time", O_CREAT, 0664, 1))
 		|| !(data->pid = malloc(sizeof(int) * g_args.num_phi)))
 		return (1);
 	return (0);
@@ -83,9 +85,11 @@ static void		destroy_semaphores(t_shared *data)
 	sem_close(data->sem_forks);
 	sem_close(data->sem_stdio);
 	sem_close(data->sem_dead);
+	sem_close(data->sem_time);
 	sem_unlink("forks");
 	sem_unlink("stdio");
 	sem_unlink("dead");
+	sem_unlink("time");
 	i = 0;
 	while (i < g_args.num_phi)
 	{

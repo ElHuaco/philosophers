@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 09:18:56 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 12:53:45 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/10 08:43:22 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ static void	capto_furca(unsigned long id, struct timeval *time, t_shared *data)
 
 static void	f(unsigned long id, struct timeval *time, int *meals, t_shared *dat)
 {
+	sem_wait(dat->sem_time);
 	gettimeofday(time + 1, NULL);
+	sem_post(dat->sem_time);
 	pch(get_timestamp(time, time + 1), id, EAT_STR, dat);
 	new_usleep(time, g_args.time_to_eat);
 	(*meals)++;
@@ -65,8 +67,8 @@ static void	*tunc_moriatur(void *monitor_data)
 	id = casted_mon->id;
 	while (1)
 	{
-		usleep(10);
 		gettimeofday(&current_time, NULL);
+		sem_wait(casted_mon->data->sem_time);
 		if (get_timestamp(casted_mon->time_eat, &current_time)
 			> g_args.time_to_die)
 		{
@@ -75,6 +77,7 @@ static void	*tunc_moriatur(void *monitor_data)
 			sem_post(casted_mon->data->sem_dead);
 			return (NULL);
 		}
+		sem_post(casted_mon->data->sem_time);
 	}
 }
 

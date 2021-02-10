@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/09 09:07:04 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 12:43:01 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/10 08:42:52 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct		s_shared
 	sem_t			*sem_forks;
 	sem_t			*sem_stdio;
 	sem_t			**sem_meals;
+	sem_t			*sem_time;
 	int				*pid;
 }					t_shared;
 

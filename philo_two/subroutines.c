@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/09 11:02:51 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/10 09:15:34 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,44 +30,35 @@ static void	new_usleep(struct timeval *time, unsigned long time_lapse)
 
 static void	capto_furca(unsigned long id, struct timeval *time)
 {
-	sem_t	*sem_fork;
-
-	sem_fork = sem_open("forks", 0);
-	sem_wait(sem_fork);
+	sem_wait(g_sem_forks);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, FORK_STR);
-	sem_wait(sem_fork);
+	sem_wait(g_sem_forks);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, FORK_STR);
-	sem_close(sem_fork);
 }
 
 static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 {
-	sem_t	*sem_fork;
-	sem_t	*sem_meals;
-
-	sem_fork = sem_open("forks", 0);
-	sem_meals = sem_open("meals", 0);
+	sem_wait(g_sem_time);
 	gettimeofday(time + 1, NULL);
+	sem_post(g_sem_time);
 	printchange(get_timestamp(time, time + 1), id, EAT_STR);
 	new_usleep(time, g_args.time_to_eat);
 	(*meals)++;
 	if ((g_args.num_must_eat) && (*meals == g_args.num_must_eat))
 	{
-		sem_wait(sem_meals);
+		sem_wait(g_sem_meals);
 		g_args.num_satiated++;
-		sem_post(sem_meals);
+		sem_post(g_sem_meals);
 	}
-	sem_post(sem_fork);
-	sem_post(sem_fork);
+	sem_post(g_sem_forks);
+	sem_post(g_sem_forks);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, SLEEP_STR);
 	new_usleep(time, g_args.time_to_sleep);
 	gettimeofday(time + 2, NULL);
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
-	sem_close(sem_fork);
-	sem_close(sem_meals);
 }
 
 static void	*tunc_moriatur(void *data)
@@ -80,15 +71,16 @@ static void	*tunc_moriatur(void *data)
 	id = monitor_data->id;
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
-		usleep(10);
 		gettimeofday(&current_time, NULL);
-		if ((time_lapse = get_timestamp(monitor_data->time_eat, &current_time))
+		sem_wait(g_sem_time);
+		if (get_timestamp(monitor_data->time_eat, &current_time)
 			> g_args.time_to_die)
 		{
 			printchange(get_timestamp(monitor_data->time_zero, &current_time),
 				id, DEATH_STR);
 			g_args.deadflag = 1;
 		}
+		sem_post(g_sem_time);
 	}
 	return (NULL);
 }
