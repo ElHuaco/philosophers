@@ -6,7 +6,7 @@
 /*   By: aleon-ca <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 09:05:08 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/10 09:07:53 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/11 11:43:07 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,11 @@ unsigned long		ft_atoul(char *str);
 char				*ft_ultoa(unsigned long n);
 void				printchange(unsigned long tme, unsigned long id, char *str);
 /*
-**	main.c
+**	timestamps.c
 */
 unsigned long		get_timestamp(struct timeval *time1, struct timeval *time2);
 void				init_timestamps(struct timeval **time_add, t_monitor *data);
+void				new_usleep(struct timeval *time, unsigned long time_lapse);
 /*
 **	subroutines.c
 */

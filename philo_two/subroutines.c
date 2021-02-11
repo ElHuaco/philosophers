@@ -6,27 +6,11 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/10 09:15:34 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/11 11:53:00 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_two.h"
-
-static void	new_usleep(struct timeval *time, unsigned long time_lapse)
-{
-	unsigned long	time_objective;
-	unsigned long	current_time;
-
-	gettimeofday(time + 2, NULL);
-	current_time = get_timestamp(time, time + 2);
-	time_objective = current_time + time_lapse;
-	while (current_time < time_objective)
-	{
-		usleep(10);
-		gettimeofday(time + 2, NULL);
-		current_time = get_timestamp(time, time + 2);
-	}
-}
 
 static void	capto_furca(unsigned long id, struct timeval *time)
 {
@@ -61,6 +45,19 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 }
 
+static void	post_all()
+{
+	unsigned long i;
+
+	sem_post(g_sem_time);
+	i = 0;
+	while (i < g_args.num_phi)
+	{
+		sem_post(g_sem_forks);
+		sem_post(g_sem_forks);
+	}
+}
+
 static void	*tunc_moriatur(void *data)
 {
 	unsigned long	id;
@@ -79,6 +76,8 @@ static void	*tunc_moriatur(void *data)
 			printchange(get_timestamp(monitor_data->time_zero, &current_time),
 				id, DEATH_STR);
 			g_args.deadflag = 1;
+			post_all();
+			return (NULL);
 		}
 		sem_post(g_sem_time);
 	}
@@ -99,13 +98,14 @@ void		*primum_vivere(void *philo_id)
 	time = malloc(sizeof(struct timeval) * 3);
 	init_timestamps(&time, &data);
 	pthread_create(&the_reaper, NULL, tunc_moriatur, (void *)&data);
+	pthread_detach(the_reaper);
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 	while (!(g_args.deadflag) && (g_args.num_satiated != g_args.num_phi))
 	{
 		capto_furca(id, time);
 		philosophare(id, time, &meals_had);
 	}
-	pthread_detach(the_reaper);
 	free(time);
+	pthread_detach(the_reaper);
 	return (NULL);
 }

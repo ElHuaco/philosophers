@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 17:40:30 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/10 09:16:46 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/11 12:20:16 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 static int		set_and_check_args(int argc, char **argv)
 {
 	g_args.num_phi = ft_atoul(argv[1]);
+	if (g_args.num_phi == 1)
+		return (1);
 	g_args.time_to_die = ft_atoul(argv[2]);
 	g_args.time_to_eat = ft_atoul(argv[3]);
 	g_args.time_to_sleep = ft_atoul(argv[4]);
@@ -56,21 +58,6 @@ static int		create_threads(pthread_t *phi_threads, unsigned long *phi_id)
 	while (i < g_args.num_phi)
 		pthread_join(phi_threads[i++], NULL);
 	return (0);
-}
-
-unsigned long	get_timestamp(struct timeval *t1, struct timeval *t2)
-{
-	return ((unsigned long)((t2->tv_sec - t1->tv_sec) * 1000)
-		+ (unsigned long)((t2->tv_usec - t1->tv_usec) / 1000));
-}
-
-void			init_timestamps(struct timeval **time, t_monitor *data)
-{
-	gettimeofday(*time, NULL);
-	data->time_zero = *time;
-	gettimeofday(*time + 1, NULL);
-	data->time_eat = *time + 1;
-	gettimeofday(*time + 2, NULL);
 }
 
 int				main(int argc, char **argv)
