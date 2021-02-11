@@ -6,7 +6,7 @@
 /*   By: aleon-ca <aleon-ca@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 13:13:18 by aleon-ca          #+#    #+#             */
-/*   Updated: 2021/02/11 11:53:00 by aleon-ca         ###   ########.fr       */
+/*   Updated: 2021/02/11 12:26:14 by aleon-ca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	philosophare(unsigned long id, struct timeval *time, int *meals)
 	printchange(get_timestamp(time, time + 2), id, THINK_STR);
 }
 
-static void	post_all()
+static void	post_all(void)
 {
 	unsigned long i;
 
