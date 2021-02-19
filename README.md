@@ -2,9 +2,6 @@ _"The challenge in the dining philosophers problem is to design a protocol so th
 
 ![](https://miro.medium.com/max/544/1*kTNv4zAJfdhvM9l0LiwUaA.png)
 
-TODO:
-- Why does fsanitize=thread modify philo_two?
-
 Teoría:
 - [Tutorial 1](https://hpc.llnl.gov/training/tutorials/introduction-parallel-computing-tutorial)
 -	[Tutorial 2](https://computing.llnl.gov/tutorials/pthreads/)
